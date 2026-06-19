@@ -59,7 +59,16 @@ export function MarketsTab({ data, onChange }: Props) {
       ? data.deals.filter(d => !(d.good === goodId && (d.seller === market.i || d.buyer === market.i)))
       : data.deals;
 
-    onChange({ ...data, markets: newMarkets, deals: newDeals });
+    // Remove this market's center burg from the goodsDef producers list
+    const newGoodsDefs = removing
+      ? data.goodsDefs.map(g => {
+          if (g.i !== goodId) return g;
+          const producers = Array.isArray(g.producers) ? (g.producers as number[]).filter(p => p !== market.centerBurgId) : [];
+          return { ...g, producers };
+        })
+      : data.goodsDefs;
+
+    onChange({ ...data, markets: newMarkets, deals: newDeals, goodsDefs: newGoodsDefs });
   }, [data, onChange]);
 
   const updateStock = useCallback((marketIdx: number, goodId: number, stock: number, price: number) => {
@@ -121,9 +130,12 @@ export function MarketsTab({ data, onChange }: Props) {
                       delete goods[key];
                       return { ...m, goods };
                     });
-                    // Remove all deals for this good
+                    // Remove all deals and clear producers list in goodsDef
                     const newDeals = data.deals.filter(d => d.good !== selectedGood.i);
-                    onChange({ ...data, markets: newMarkets, deals: newDeals });
+                    const newGoodsDefs = data.goodsDefs.map(g =>
+                      g.i === selectedGood.i ? { ...g, producers: [] } : g
+                    );
+                    onChange({ ...data, markets: newMarkets, deals: newDeals, goodsDefs: newGoodsDefs });
                   }}
                 >
                   Remove from all

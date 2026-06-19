@@ -339,6 +339,7 @@ export function serializeMapFile(data: MapData): string {
   sections[30] = JSON.stringify(data.pack.provinces);
   sections[32] = JSON.stringify(data.pack.rivers);
   sections[37] = JSON.stringify(data.pack.routes);
+  sections[41] = JSON.stringify(data.goodsDefs);
   sections[42] = JSON.stringify(data.markets);
   sections[43] = JSON.stringify(data.deals);
 

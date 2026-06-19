@@ -9,7 +9,7 @@ interface Props {
 }
 
 const COLUMNS: Column<Religion>[] = [
-  { key: "i", label: "#", width: 50 },
+  { key: "i", label: "#", width: 45 },
   { key: "name", label: "Name", editable: true, type: "text", width: 180 },
   { key: "color", label: "Color", editable: true, type: "color", width: 160 },
   { key: "type", label: "Type", editable: true, type: "text", width: 100 },
@@ -24,7 +24,7 @@ const COLUMNS: Column<Religion>[] = [
 export function ReligionsTab({ data, onChange }: Props) {
   const religions = data.pack.religions.filter(r => r.i !== 0);
 
-  const handleUpdate = useCallback((i: number, key: string, value: string | number) => {
+  const handleUpdate = useCallback((i: number, key: string, value: string | number | boolean | unknown[]) => {
     const newReligions = data.pack.religions.map(r =>
       r.i === i ? { ...r, [key]: value } : r
     );

@@ -9,7 +9,7 @@ interface Props {
 }
 
 const COLUMNS: Column<River>[] = [
-  { key: "i", label: "#", width: 50 },
+  { key: "i", label: "#", width: 45 },
   { key: "name", label: "Name", editable: true, type: "text", width: 200 },
   { key: "type", label: "Type", editable: true, type: "text", width: 120 },
 ];
@@ -17,7 +17,7 @@ const COLUMNS: Column<River>[] = [
 export function RiversTab({ data, onChange }: Props) {
   const rivers = data.pack.rivers.filter(r => !r.removed);
 
-  const handleUpdate = useCallback((i: number, key: string, value: string | number) => {
+  const handleUpdate = useCallback((i: number, key: string, value: string | number | boolean | unknown[]) => {
     const newRivers = data.pack.rivers.map(r =>
       r.i === i ? { ...r, [key]: value } : r
     );

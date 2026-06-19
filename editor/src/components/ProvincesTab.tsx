@@ -9,19 +9,19 @@ interface Props {
 }
 
 const COLUMNS: Column<Province>[] = [
-  { key: "i", label: "#", width: 50 },
+  { key: "i", label: "#", width: 45 },
   { key: "name", label: "Name", editable: true, type: "text", width: 160 },
   { key: "fullName", label: "Full Name", editable: true, type: "text", width: 200 },
   { key: "color", label: "Color", editable: true, type: "color", width: 160 },
   { key: "formName", label: "Form Name", editable: true, type: "text", width: 120 },
-  { key: "state", label: "State", width: 70 },
+  { key: "state", label: "State", width: 60 },
   { key: "burg", label: "Capital Burg", width: 100 },
 ];
 
 export function ProvincesTab({ data, onChange }: Props) {
   const provinces = data.pack.provinces.filter(p => p.i !== 0);
 
-  const handleUpdate = useCallback((i: number, key: string, value: string | number) => {
+  const handleUpdate = useCallback((i: number, key: string, value: string | number | boolean | unknown[]) => {
     const newProvinces = data.pack.provinces.map(p =>
       p.i === i ? { ...p, [key]: value } : p
     );

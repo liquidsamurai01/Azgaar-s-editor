@@ -173,7 +173,9 @@ export async function parseMapFile(file: File): Promise<MapData> {
     }
   }
 
-  const sections = text.split("\r\n");
+  // Split on \r\n first; fall back to \n if only 1 section found
+  let sections = text.split("\r\n");
+  if (sections.length === 1) sections = text.split("\n");
 
   // Version is stored in params section (first element after splitting)
   let version = "unknown";
@@ -196,30 +198,28 @@ export async function parseMapFile(file: File): Promise<MapData> {
     }
   };
 
-  const notes: Note[] = parseSection(sections[2]) || [];
+  // Section indices confirmed from real .map file (v1.124.4, split by \r\n or \n):
+  // 0: params, 1: settings, 2: coords, 3: biomes, 4: notes, 5: SVG,
+  // 6: grid, 7-12: cell arrays, 13: cultures, 14: states, 15: burgs,
+  // 16-28: more cell arrays, 29: religions, 30: provinces,
+  // 31: nameBases, 32: rivers, 37: routes
   const biomesData = parseSection(sections[3]) || {};
-  const svg = sections[4] || "";
-  const grid = parseSection(sections[5]) || {};
+  const notes: Note[] = parseSection(sections[4]) || [];
+  const svg = sections[5] || "";
+  const grid = parseSection(sections[6]) || {};
 
-  // Pack data is split across sections 6+
-  // In newer versions pack sub-arrays are stored individually
   const pack: Pack = {
-    burgs: parseSection(sections[6]) || [],
-    states: parseSection(sections[7]) || [],
-    cultures: parseSection(sections[8]) || [],
-    religions: parseSection(sections[9]) || [],
-    provinces: parseSection(sections[10]) || [],
-    rivers: parseSection(sections[11]) || [],
-    routes: parseSection(sections[13]) || [],
+    cultures: parseSection(sections[13]) || [],
+    states: parseSection(sections[14]) || [],
+    burgs: parseSection(sections[15]) || [],
+    religions: parseSection(sections[29]) || [],
+    provinces: parseSection(sections[30]) || [],
+    rivers: parseSection(sections[32]) || [],
+    routes: parseSection(sections[37]) || [],
   };
 
-  // Notes may also be at index 19 in some versions
-  let parsedNotes = notes;
-  if (!Array.isArray(parsedNotes) || parsedNotes.length === 0) {
-    parsedNotes = parseSection(sections[19]) || [];
-  }
-
-  const nameBases = parseSection(sections[24]) || [];
+  const parsedNotes = notes;
+  const nameBases = parseSection(sections[31]) || [];
 
   // Parse params and settings
   const paramsRaw = sections[0];
@@ -268,7 +268,7 @@ export async function parseMapFile(file: File): Promise<MapData> {
   return {
     params,
     settings,
-    coords: parseSection(sections[5]),
+    coords: parseSection(sections[2]),
     notes: parsedNotes,
     biomesData,
     svg,
@@ -284,14 +284,14 @@ export function serializeMapFile(data: MapData): string {
   // Write back modified data into raw sections and rejoin
   const sections = [...data.raw];
 
-  sections[2] = JSON.stringify(data.notes);
-  sections[6] = JSON.stringify(data.pack.burgs);
-  sections[7] = JSON.stringify(data.pack.states);
-  sections[8] = JSON.stringify(data.pack.cultures);
-  sections[9] = JSON.stringify(data.pack.religions);
-  sections[10] = JSON.stringify(data.pack.provinces);
-  sections[11] = JSON.stringify(data.pack.rivers);
-  sections[13] = JSON.stringify(data.pack.routes);
+  sections[4] = JSON.stringify(data.notes);
+  sections[13] = JSON.stringify(data.pack.cultures);
+  sections[14] = JSON.stringify(data.pack.states);
+  sections[15] = JSON.stringify(data.pack.burgs);
+  sections[29] = JSON.stringify(data.pack.religions);
+  sections[30] = JSON.stringify(data.pack.provinces);
+  sections[32] = JSON.stringify(data.pack.rivers);
+  sections[37] = JSON.stringify(data.pack.routes);
 
   // Update settings
   try {

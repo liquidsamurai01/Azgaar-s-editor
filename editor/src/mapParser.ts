@@ -173,7 +173,9 @@ export async function parseMapFile(file: File): Promise<MapData> {
     }
   }
 
-  const sections = text.split("\r\n");
+  // Split on \r\n first; fall back to \n if only 1 section found
+  let sections = text.split("\r\n");
+  if (sections.length === 1) sections = text.split("\n");
 
   // Version is stored in params section (first element after splitting)
   let version = "unknown";
@@ -196,11 +198,11 @@ export async function parseMapFile(file: File): Promise<MapData> {
     }
   };
 
-  // Correct section indices per FMG source (public/modules/io/load.js):
+  // Section indices confirmed from real .map file (v1.124.4, split by \r\n or \n):
   // 0: params, 1: settings, 2: coords, 3: biomes, 4: notes, 5: SVG,
-  // 6: grid, 7-11: cell props, 12: features, 13: cultures, 14: states,
-  // 15: burgs, 16-28: cell arrays, 29: religions, 30: provinces,
-  // 31: nameBases, 32: rivers, 36-37: routes
+  // 6: grid, 7-12: cell arrays, 13: cultures, 14: states, 15: burgs,
+  // 16-28: more cell arrays, 29: religions, 30: provinces,
+  // 31: nameBases, 32: rivers, 37: routes
   const biomesData = parseSection(sections[3]) || {};
   const notes: Note[] = parseSection(sections[4]) || [];
   const svg = sections[5] || "";
@@ -213,7 +215,7 @@ export async function parseMapFile(file: File): Promise<MapData> {
     religions: parseSection(sections[29]) || [],
     provinces: parseSection(sections[30]) || [],
     rivers: parseSection(sections[32]) || [],
-    routes: parseSection(sections[36]) || [],
+    routes: parseSection(sections[37]) || [],
   };
 
   const parsedNotes = notes;
@@ -289,7 +291,7 @@ export function serializeMapFile(data: MapData): string {
   sections[29] = JSON.stringify(data.pack.religions);
   sections[30] = JSON.stringify(data.pack.provinces);
   sections[32] = JSON.stringify(data.pack.rivers);
-  sections[36] = JSON.stringify(data.pack.routes);
+  sections[37] = JSON.stringify(data.pack.routes);
 
   // Update settings
   try {

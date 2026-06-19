@@ -7,6 +7,7 @@ import { ReligionsTab } from "./ReligionsTab";
 import { ProvincesTab } from "./ProvincesTab";
 import { RiversTab } from "./RiversTab";
 import { NotesTab } from "./NotesTab";
+import { MarketsTab } from "./MarketsTab";
 import { SettingsTab } from "./SettingsTab";
 
 interface Props {
@@ -14,7 +15,7 @@ interface Props {
   onChange: (data: MapData) => void;
 }
 
-type TabId = "burgs" | "states" | "cultures" | "religions" | "provinces" | "rivers" | "notes" | "settings";
+type TabId = "burgs" | "states" | "cultures" | "religions" | "provinces" | "rivers" | "notes" | "markets" | "settings";
 
 interface TabDef {
   id: TabId;
@@ -33,6 +34,7 @@ export function EditorTabs({ data, onChange }: Props) {
     { id: "provinces", label: "Provinces", count: data.pack.provinces.filter(p => !p.removed && p.i !== 0).length },
     { id: "rivers", label: "Rivers", count: data.pack.rivers.filter(r => !r.removed).length },
     { id: "notes", label: "Notes", count: data.notes.length },
+    { id: "markets", label: "Markets & Goods", count: data.markets.length },
     { id: "settings", label: "Settings" },
   ];
 
@@ -61,6 +63,7 @@ export function EditorTabs({ data, onChange }: Props) {
         {active === "provinces" && <ProvincesTab data={data} onChange={onChange} />}
         {active === "rivers" && <RiversTab data={data} onChange={onChange} />}
         {active === "notes" && <NotesTab data={data} onChange={onChange} />}
+        {active === "markets" && <MarketsTab data={data} onChange={onChange} />}
         {active === "settings" && <SettingsTab data={data} onChange={onChange} />}
       </div>
     </div>

@@ -14,6 +14,7 @@ export interface MapData {
   nameBases: unknown[];
   goodsDefs: GoodDef[];
   markets: Market[];
+  sep: string; // line ending used as section delimiter (\r\n or \n)
   raw: string[]; // original sections for round-trip
   version: string;
 }
@@ -197,9 +198,9 @@ export async function parseMapFile(file: File): Promise<MapData> {
     }
   }
 
-  // Split on \r\n first; fall back to \n if only 1 section found
-  let sections = text.split("\r\n");
-  if (sections.length === 1) sections = text.split("\n");
+  // Detect section delimiter before splitting — once split the delimiter is gone
+  const sep = text.includes("\r\n") ? "\r\n" : "\n";
+  const sections = text.split(sep);
 
   // Version is stored in params section (first element after splitting)
   let version = "unknown";
@@ -304,6 +305,7 @@ export async function parseMapFile(file: File): Promise<MapData> {
     nameBases,
     goodsDefs,
     markets,
+    sep,
     raw: sections,
     version,
   };
@@ -330,9 +332,7 @@ export function serializeMapFile(data: MapData): string {
     // leave as-is
   }
 
-  // Preserve original line ending style
-  const sep = data.raw.join("").includes("\r\n") ? "\r\n" : "\n";
-  return sections.join(sep);
+  return sections.join(data.sep);
 }
 
 export function downloadMapFile(data: MapData, filename: string) {

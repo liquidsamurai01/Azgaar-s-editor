@@ -465,3 +465,93 @@ body {
   color: var(--text-dim);
   gap: 8px;
 }
+
+/* ── Markets & Goods Tab ── */
+.markets-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 16px;
+  height: calc(100vh - 120px);
+}
+
+.goods-sidebar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.goods-list {
+  overflow-y: auto;
+  flex: 1;
+}
+
+.good-list-item {
+  padding: 8px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border)44;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.15s;
+}
+.good-list-item:hover { background: var(--surface2); }
+.good-list-item.active { background: var(--surface2); color: var(--accent); }
+
+.good-market-count {
+  font-size: 11px;
+  color: var(--text-dim);
+  background: var(--surface2);
+  border-radius: 10px;
+  padding: 1px 6px;
+}
+
+.markets-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.markets-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.markets-header h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.text-dim { color: var(--text-dim); font-size: 13px; }
+
+.markets-panel .data-table-wrapper {
+  overflow: auto;
+  flex: 1;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.toggle-text {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+tr.dimmed td {
+  opacity: 0.45;
+}

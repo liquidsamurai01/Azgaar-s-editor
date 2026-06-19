@@ -12,8 +12,32 @@ export interface MapData {
   grid: Record<string, unknown>;
   pack: Pack;
   nameBases: unknown[];
+  goodsDefs: GoodDef[];
+  markets: Market[];
   raw: string[]; // original sections for round-trip
   version: string;
+}
+
+export interface GoodDef {
+  i: number;
+  name: string;
+  icon?: string;
+  color?: string;
+  tags?: string[];
+  [key: string]: unknown;
+}
+
+export interface MarketGood {
+  stock: number;
+  price: number;
+}
+
+export interface Market {
+  i: number;
+  centerBurgId: number;
+  color?: string;
+  goods: Record<string, MarketGood>;
+  [key: string]: unknown;
 }
 
 export interface Note {
@@ -220,6 +244,9 @@ export async function parseMapFile(file: File): Promise<MapData> {
 
   const parsedNotes = notes;
   const nameBases = parseSection(sections[31]) || [];
+  // 41: goods definitions, 42: markets
+  const goodsDefs: GoodDef[] = parseSection(sections[41]) || [];
+  const markets: Market[] = parseSection(sections[42]) || [];
 
   // Parse params and settings
   const paramsRaw = sections[0];
@@ -275,6 +302,8 @@ export async function parseMapFile(file: File): Promise<MapData> {
     grid,
     pack,
     nameBases,
+    goodsDefs,
+    markets,
     raw: sections,
     version,
   };
@@ -292,6 +321,7 @@ export function serializeMapFile(data: MapData): string {
   sections[30] = JSON.stringify(data.pack.provinces);
   sections[32] = JSON.stringify(data.pack.rivers);
   sections[37] = JSON.stringify(data.pack.routes);
+  sections[42] = JSON.stringify(data.markets);
 
   // Update settings
   try {
@@ -300,7 +330,9 @@ export function serializeMapFile(data: MapData): string {
     // leave as-is
   }
 
-  return sections.join("\r\n");
+  // Preserve original line ending style
+  const sep = data.raw.join("").includes("\r\n") ? "\r\n" : "\n";
+  return sections.join(sep);
 }
 
 export function downloadMapFile(data: MapData, filename: string) {

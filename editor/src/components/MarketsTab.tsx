@@ -39,18 +39,27 @@ export function MarketsTab({ data, onChange }: Props) {
   }, []);
 
   const toggleGood = useCallback((marketIdx: number, goodId: number) => {
+    const market = data.markets[marketIdx];
+    const removing = String(goodId) in market.goods;
+
     const newMarkets = data.markets.map((m, i) => {
       if (i !== marketIdx) return m;
       const goods = { ...m.goods };
       const key = String(goodId);
-      if (key in goods) {
+      if (removing) {
         delete goods[key];
       } else {
         goods[key] = { stock: DEFAULT_STOCK, price: DEFAULT_PRICE };
       }
       return { ...m, goods };
     });
-    onChange({ ...data, markets: newMarkets });
+
+    // Also purge all deals for this good involving this market when removing
+    const newDeals = removing
+      ? data.deals.filter(d => !(d.good === goodId && (d.seller === market.i || d.buyer === market.i)))
+      : data.deals;
+
+    onChange({ ...data, markets: newMarkets, deals: newDeals });
   }, [data, onChange]);
 
   const updateStock = useCallback((marketIdx: number, goodId: number, stock: number, price: number) => {
@@ -99,17 +108,22 @@ export function MarketsTab({ data, onChange }: Props) {
               <h2>{selectedGood.name}</h2>
               <span className="text-dim">
                 Present in {data.markets.filter(m => String(selectedGood.i) in m.goods).length} of {data.markets.length} markets
+                {" · "}
+                {data.deals.filter(d => d.good === selectedGood.i).length} active deals
               </span>
               <div style={{ display: "flex", gap: 8, marginLeft: "auto" }}>
                 <button
                   className="btn btn-secondary btn-sm"
                   onClick={() => {
+                    const key = String(selectedGood.i);
                     const newMarkets = data.markets.map(m => {
                       const goods = { ...m.goods };
-                      delete goods[String(selectedGood.i)];
+                      delete goods[key];
                       return { ...m, goods };
                     });
-                    onChange({ ...data, markets: newMarkets });
+                    // Remove all deals for this good
+                    const newDeals = data.deals.filter(d => d.good !== selectedGood.i);
+                    onChange({ ...data, markets: newMarkets, deals: newDeals });
                   }}
                 >
                   Remove from all

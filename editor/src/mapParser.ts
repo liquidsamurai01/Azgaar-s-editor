@@ -14,9 +14,23 @@ export interface MapData {
   nameBases: unknown[];
   goodsDefs: GoodDef[];
   markets: Market[];
+  deals: Deal[];
   sep: string; // line ending used as section delimiter (\r\n or \n)
   raw: string[]; // original sections for round-trip
   version: string;
+}
+
+export interface Deal {
+  i: number;
+  seller: number;
+  sellerType: string;
+  buyer: number;
+  buyerType: string;
+  good: number;
+  units: number;
+  price: number;
+  tax?: number;
+  [key: string]: unknown;
 }
 
 export interface GoodDef {
@@ -248,6 +262,7 @@ export async function parseMapFile(file: File): Promise<MapData> {
   // 41: goods definitions, 42: markets
   const goodsDefs: GoodDef[] = parseSection(sections[41]) || [];
   const markets: Market[] = parseSection(sections[42]) || [];
+  const deals: Deal[] = parseSection(sections[43]) || [];
 
   // Parse params and settings
   const paramsRaw = sections[0];
@@ -305,6 +320,7 @@ export async function parseMapFile(file: File): Promise<MapData> {
     nameBases,
     goodsDefs,
     markets,
+    deals,
     sep,
     raw: sections,
     version,
@@ -324,6 +340,7 @@ export function serializeMapFile(data: MapData): string {
   sections[32] = JSON.stringify(data.pack.rivers);
   sections[37] = JSON.stringify(data.pack.routes);
   sections[42] = JSON.stringify(data.markets);
+  sections[43] = JSON.stringify(data.deals);
 
   // Update settings
   try {

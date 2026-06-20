@@ -566,3 +566,186 @@ body {
 tr.dimmed td {
   opacity: 0.45;
 }
+
+/* ── Burg Detail Layout ── */
+.burg-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 16px;
+  height: calc(100vh - 120px);
+}
+
+.burg-sidebar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.burg-list {
+  overflow-y: auto;
+  flex: 1;
+}
+
+.burg-list-item {
+  padding: 8px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border)44;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: background 0.15s;
+}
+.burg-list-item:hover { background: var(--surface2); }
+.burg-list-item.active { background: var(--surface2); color: var(--accent); }
+
+.burg-list-name { font-weight: 500; }
+.burg-list-state { font-size: 11px; color: var(--text-dim); }
+
+.burg-list-count {
+  padding: 6px 14px;
+  font-size: 11px;
+  color: var(--text-dim);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.burg-detail-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow-y: auto;
+}
+
+.burg-detail {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.burg-detail-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.detail-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-dim);
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.detail-hint {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.detail-fields-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.detail-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.detail-input {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 6px 8px;
+  color: var(--text);
+  font-size: 13px;
+  width: 100%;
+}
+.detail-input:focus { outline: 1px solid var(--accent); }
+
+.detail-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.detail-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+/* ── Production grid ── */
+.production-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 6px;
+}
+
+.production-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background 0.15s, border-color 0.15s;
+}
+.production-item:hover { background: var(--surface2); }
+.production-item.active {
+  border-color: var(--accent);
+  background: var(--accent)18;
+}
+
+.production-icon { font-size: 16px; }
+.production-name { flex: 1; }
+
+/* ── Deal role badge ── */
+.deal-role {
+  display: inline-block;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.deal-role.seller { background: var(--success)22; color: var(--success); }
+.deal-role.buyer  { background: var(--warning)22; color: var(--warning); }
+
+/* ── Market goods summary chips ── */
+.market-goods-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.market-good-chip {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 3px 10px;
+  font-size: 12px;
+}
